@@ -52,6 +52,7 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .rememberMe()
                 .tokenRepository(tokenRepository);
+                //.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST")); // Change logout to POST when CSRF enabled
                 //.loginPage("/login"); // Customize login page with thymeleaf
 
     }

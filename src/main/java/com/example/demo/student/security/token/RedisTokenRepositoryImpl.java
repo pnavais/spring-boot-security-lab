@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Redis TokenRepository Implementation for Remember me
- *
+ * <p>
  * {@link org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl}
  * {@link org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices}
  * {@link org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken}
@@ -28,7 +28,7 @@ class RedisTokenRepositoryImpl implements PersistentTokenRepository {
 
     public static final Long DEFAULT_DAYS = 5L;
 
-    @Value("${spring.redis.rememberme.validity:#{T(com.example.demo.student.security.token.RedisTokenRepositoryImpl).DEFAULT_DAYS}}")
+    @Value("${spring.session.redis.rememberme.validity:#{T(com.example.demo.student.security.token.RedisTokenRepositoryImpl).DEFAULT_DAYS}}")
     private Long validityDays;
 
     private final StringRedisTemplate redisTemplate;
@@ -114,7 +114,7 @@ class RedisTokenRepositoryImpl implements PersistentTokenRepository {
     private void createOrUpdateToken(PersistentRememberMeToken token) {
         boolean isCreate = Objects.nonNull(token.getUsername());
 
-        log.debug("{} token seriesId: [{}]", isCreate ? "Creating": "updating", token.getSeries());
+        log.debug("{} token seriesId: [{}]", isCreate ? "Creating" : "updating", token.getSeries());
 
         String tokenKey = generateKey(token.getSeries());
         HashMap<String, String> map = new HashMap<>();

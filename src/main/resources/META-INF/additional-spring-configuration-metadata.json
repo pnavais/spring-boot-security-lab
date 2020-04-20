@@ -1,7 +1,7 @@
 {
   "properties": [
     {
-      "name": "spring.redis.rememberme.validity",
+      "name": "spring.session.redis.rememberme.validity",
       "type": "java.lang.Long",
       "description": "Number of days for TTL remember me cookie."
   }
