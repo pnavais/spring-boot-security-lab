@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import static com.example.demo.student.security.ApplicationUserPermission.COURSE_WRITE;
 import static com.example.demo.student.security.ApplicationUserRole.STUDENT;
@@ -22,19 +23,21 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
 
     public static final String MANAGEMENT_API = "/management/api/**";
 
-    private UserProvider userProvider;
+    private final UserProvider userProvider;
+
+    private final PersistentTokenRepository tokenRepository;
 
     @Autowired
-    public BasicAuthConfig(UserProvider userProvider) {
+    public BasicAuthConfig(UserProvider userProvider, PersistentTokenRepository tokenRepository) {
         this.userProvider = userProvider;
+        this.tokenRepository = tokenRepository;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()/*csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()*/
+        http.csrf().disable()/*csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()*/
                 .authorizeRequests()
-                .antMatchers("/", "index", "/css/*", "/js/*", "/swagger-ui*")
+                .antMatchers("/", "index", "/css/*", "/js/*", "/swagger-ui*", "/login*", "/favicon.ico")
                 .permitAll()
                 .antMatchers("/api/**")
                 .hasRole(STUDENT.name())
@@ -45,7 +48,12 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()
                 .and()
-                .httpBasic();
+                .formLogin() /* Form base auth, previously basic auth => .httpBasic() */
+                .and()
+                .rememberMe()
+                .tokenRepository(tokenRepository);
+                //.loginPage("/login"); // Customize login page with thymeleaf
+
     }
 
     @Override
