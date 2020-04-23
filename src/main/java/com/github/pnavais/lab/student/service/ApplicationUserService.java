@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("appUserService")
 @Slf4j
 public class ApplicationUserService implements UserDetailsService {
 
@@ -18,7 +18,7 @@ public class ApplicationUserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         log.debug("Loading User : {}", username);
         return applicationUserDAO.selectApplicationUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("Cannot find user %s",username)));
